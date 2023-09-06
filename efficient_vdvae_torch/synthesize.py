@@ -14,11 +14,11 @@ import numpy as np
 try:
     from .utils.utils import assert_CUDA_and_hparams_gpus_are_equal, create_checkpoint_manager_and_load_if_exists, \
         get_logdir, get_variate_masks, transpose_dicts
-    from .data.generic_data_loader import synth_generic_data, encode_generic_data, stats_generic_data
-    from .data.cifar10_data_loader import synth_cifar_data, encode_cifar_data, stats_cifar_data
-    from .data.imagenet_data_loader import synth_imagenet_data, encode_imagenet_data, stats_imagenet_data
-    from .data.mnist_data_loader import synth_mnist_data, encode_mnist_data, stats_mnist_data
-    from .model.def_model import UniversalAutoEncoder
+    # from .data.generic_data_loader import synth_generic_data, encode_generic_data, stats_generic_data
+    # from .data.cifar10_data_loader import synth_cifar_data, encode_cifar_data, stats_cifar_data
+    # from .data.imagenet_data_loader import synth_imagenet_data, encode_imagenet_data, stats_imagenet_data
+    # from .data.mnist_data_loader import synth_mnist_data, encode_mnist_data, stats_mnist_data
+    # from .model.def_model import UniversalAutoEncoder
     from .model.model import reconstruction_step, generation_step, encode_step
     from .model.losses import StructureSimilarityIndexMap
     from .utils import temperature_functions
@@ -27,10 +27,10 @@ try:
 except(ImportError, ValueError):
     from utils.utils import assert_CUDA_and_hparams_gpus_are_equal, create_checkpoint_manager_and_load_if_exists, \
         get_logdir, get_variate_masks, transpose_dicts
-    from data.generic_data_loader import synth_generic_data, encode_generic_data, stats_generic_data
-    from data.cifar10_data_loader import synth_cifar_data, encode_cifar_data, stats_cifar_data
-    from data.imagenet_data_loader import synth_imagenet_data, encode_imagenet_data, stats_imagenet_data
-    from data.mnist_data_loader import synth_mnist_data, encode_mnist_data, stats_mnist_data
+    # from data.generic_data_loader import synth_generic_data, encode_generic_data, stats_generic_data
+    # from data.cifar10_data_loader import synth_cifar_data, encode_cifar_data, stats_cifar_data
+    # from data.imagenet_data_loader import synth_imagenet_data, encode_imagenet_data, stats_imagenet_data
+    # from data.mnist_data_loader import synth_mnist_data, encode_mnist_data, stats_mnist_data
     from model.def_model import UniversalAutoEncoder
     from model.model import reconstruction_step, generation_step, encode_step
     from model.losses import StructureSimilarityIndexMap
@@ -71,7 +71,7 @@ def write_image_to_disk(filepath, image):
 
     else:
         assert image.shape[0] == 3
-        image = np.round(image * 127.5 + 127.5)
+        image = np.round(image * 127.5 + 127.5) #what? why this? -- cocoaaa: [0,1] range to [0,255]
         image = image.astype(np.uint8)
         image = np.transpose(image, (1, 2, 0))
 
@@ -156,13 +156,14 @@ def generation_mode(artifacts_folder, latents_folder, model):
         for step in range(hparams.synthesis.n_generation_batches):
             outputs, prior_zs = generation_step(model, temperatures=temperatures)
             for output in outputs:
-                write_image_to_disk(os.path.join(artifacts_folder, f'setup-{temp_i:01d}-image-{sample_i:04d}.png'),
+                write_image_to_disk(os.path.join(artifacts_folder, f'temp-{temperature_setting}-{sample_i:07d}.png'),
                                     output.detach().cpu().numpy())
 
                 sample_i += 1
-
-            print(f'Step: {step:04d} ', end='\r')
-            print()
+            print_every = 1_000
+            if (sample_i + 1) // print_every == 0:
+                print(f'Sampling nth image: {step:07d} ', end='\r')
+                print()
 
 
 def compute_per_dimension_divergence_stats(dataset, model, latents_folder):

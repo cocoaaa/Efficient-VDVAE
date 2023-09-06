@@ -141,5 +141,9 @@ cython_debug/
 .idea/
 
 
+# jobs
+nohup.out
 
+# my sampling outputs
+dataset_dumps/
 

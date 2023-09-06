@@ -4,7 +4,7 @@ import numpy as np
 from hparams import HParams
 from collections import defaultdict
 from torch.utils.tensorboard import SummaryWriter
-from prettytable import PrettyTable
+# from prettytable import PrettyTable
 
 hparams = HParams.get_hparams_by_name("efficient_vdvae")
 
@@ -52,20 +52,21 @@ def one_hot(indices, depth, dim):
 
 
 def count_parameters(model):
-    table = PrettyTable(["Modules", "Parameters"])
+    # table = PrettyTable(["Modules", "Parameters"])
     total_params = 0
     for name, parameter in model.named_parameters():
         if not parameter.requires_grad: continue
         param = parameter.numel()
-        table.add_row([name, param])
+        # table.add_row([name, param])
         total_params += param
-    print(table)
+    # print(table)
     print(f"Total Trainable Params: {total_params}")
     return total_params
 
 
 def assert_CUDA_and_hparams_gpus_are_equal():
     print('Running on: ', torch.cuda.device_count(), ' GPUs')
+    print('hparam run num_gpus: ', hparams.run.num_gpus )
     assert hparams.run.num_gpus == torch.cuda.device_count()
 
 
