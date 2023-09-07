@@ -269,11 +269,11 @@ pip install --upgrade tensorboard
 Efficient-VDVAE support multiple inference modes:  
   
 - "reconstruction": Encodes then decodes the test set images and computes test NLL and SSIM.  
-- "generation": Generates random images from the prior distribution. Randomness is controlled by the `run.seed` parameter.  
+- "generation": Generates random images from the prior distribution. Randomness is controlled by the `run.seed` parameter.  -- #here
 - "div_stats": Pre-computes the average KL divergence stats used to determine turned-off variates (refer to section 7 of the [paper](https://arxiv.org/abs/2203.13751)). Note: This mode needs to be run before "encoding" mode and before trying to do masked "reconstruction" (Refer to [hparams.cfg](https://github.com/Rayhane-mamah/Efficient-VDVAE/blob/main/jax/hparams.cfg) for a detailed description).  
 - "encoding": Extracts the latent distribution from the inference model, pruned to the quantile defined by `synthesis.variates_masks_quantile` parameter. This latent distribution is usable in downstream tasks.  
   
-To run the inference:  
+To run the inference:  -- #here 
   
 ```  
 cd efficient_vdvae_torch  # or cd efficient_vdvae_jax  
